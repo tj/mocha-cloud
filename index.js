@@ -124,7 +124,7 @@ Cloud.prototype.start = function(fn){
               if (err) return done(err);
               if (!res) return debug('waiting for results'), wait();
               debug('results %j', res);
-              self.emit('end', browser, res);
+              self.emit('end', conf, res);
               browser.quit();
               done(null, res);
             });
