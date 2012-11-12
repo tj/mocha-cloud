@@ -30,7 +30,6 @@ function Cloud(name, user, key) {
   this.key = key;
   this.browsers = [];
   this._tags = [];
-  // this.browser = wd.remote('ondemand.saucelabs.com', 80, user, key);
 }
 
 /**
@@ -67,10 +66,11 @@ Cloud.prototype.browser = function(name, version, platform){
   });
 };
 
-Cloud.prototype.run = function(fn){
+Cloud.prototype.start = function(fn){
   var self = this;
   var batch = new Batch;
   var url = 'http://localhost:3000/test/';
+  fn = fn || function(){};
 
   this.browsers.forEach(function(conf){
     conf.tags = self.tags;
@@ -78,6 +78,8 @@ Cloud.prototype.run = function(fn){
 
     batch.push(function(done){
       debug('running %s %s %s', conf.browserName, conf.version, conf.platform);
+      var browser = wd.remote('ondemand.saucelabs.com', 80, self.user, self.key);
+
       browser.init(conf, function(){
         debug('open %s', url);
         browser.get(url, function(err){
