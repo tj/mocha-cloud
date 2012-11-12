@@ -88,6 +88,12 @@ Cloud.prototype.browser = function(name, version, platform){
 /**
  * Start cloud tests and invoke `fn(err, results)`.
  *
+ * Emits:
+ *
+ *   - `init` (browser) testing initiated
+ *   - `start` (browser) testing started
+ *   - `end` (browser, results) test results complete
+ *
  * @param {Function} fn
  * @api public
  */
@@ -104,23 +110,27 @@ Cloud.prototype.start = function(fn){
     batch.push(function(done){
       debug('running %s %s %s', conf.browserName, conf.version, conf.platform);
       var browser = wd.remote('ondemand.saucelabs.com', 80, self.user, self.key);
+      self.emit('init', conf);
 
       browser.init(conf, function(){
         debug('open %s', self._url);
+        self.emit('start', conf);
+
         browser.get(self._url, function(err){
           if (err) return done(err);
-
-          wait();
 
           function wait() {
             browser.eval('window.mochaResults', function(err, res){
               if (err) return done(err);
               if (!res) return debug('waiting for results'), wait();
               debug('results %j', res);
+              self.emit('end', browser, res);
               browser.quit();
               done(null, res);
             });
           }
+
+          wait();
         });
       });
     });
