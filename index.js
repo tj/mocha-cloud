@@ -4,7 +4,9 @@
  */
 
 var Emitter = require('events').EventEmitter
-  , debug = require('debug')('mocha-cloud');
+  , debug = require('debug')('mocha-cloud')
+  , Batch = require('batch')
+  , wd = require('wd');
 
 /**
  * Expose `Cloud`.
@@ -65,3 +67,36 @@ Cloud.prototype.browser = function(name, version, platform){
   });
 };
 
+Cloud.prototype.run = function(fn){
+  var self = this;
+  var batch = new Batch;
+  var url = 'http://localhost:3000/test/';
+
+  this.browsers.forEach(function(conf){
+    conf.tags = self.tags;
+    conf.name = self.name;
+
+    batch.push(function(done){
+      debug('running %s %s %s', conf.browserName, conf.version, conf.platform);
+      browser.init(conf, function(){
+        debug('open %s', url);
+        browser.get(url, function(err){
+          if (err) return done(err);
+
+          wait();
+
+          function wait() {
+            browser.eval('window.mochaResults', function(err, res){
+              if (err) return done(err);
+              if (!res) return debug('waiting for results'), wait();
+              debug('results %j', res);
+              browser.quit();
+            });
+          }
+        });
+      });
+    });
+  });
+
+  batch.end(fn);
+};

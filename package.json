@@ -6,7 +6,8 @@
   "author": "TJ Holowaychuk <tj@vision-media.ca>",
   "dependencies": {
     "wd": "0.0.26",
-    "debug": "~0.7.0"
+    "debug": "~0.7.0",
+    "batch": "~0.2.1"
   },
   "devDependencies": {
     "mocha": "*",
