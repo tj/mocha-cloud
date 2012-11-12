@@ -29,8 +29,15 @@ function Cloud(name, user, key) {
   this.user = user;
   this.key = key;
   this.browsers = [];
+  this._url = 'http://localhost:3000/';
   this._tags = [];
 }
+
+/**
+ * Inherits from `Emitter.prototype`.
+ */
+
+Cloud.prototype.__proto__ = Emitter.prototype;
 
 /**
  * Set tags to `tags`.
@@ -42,6 +49,18 @@ function Cloud(name, user, key) {
 
 Cloud.prototype.tags = function(tags){
   this._tags = tags;
+  return this;
+};
+
+/**
+ * Set test `url`.
+ *
+ * @param {String} url
+ * @api public
+ */
+
+Cloud.prototype.url = function(url){
+  this._url = url;
   return this;
 };
 
@@ -69,7 +88,6 @@ Cloud.prototype.browser = function(name, version, platform){
 Cloud.prototype.start = function(fn){
   var self = this;
   var batch = new Batch;
-  var url = 'http://localhost:3000/test/';
   fn = fn || function(){};
 
   this.browsers.forEach(function(conf){
@@ -81,8 +99,8 @@ Cloud.prototype.start = function(fn){
       var browser = wd.remote('ondemand.saucelabs.com', 80, self.user, self.key);
 
       browser.init(conf, function(){
-        debug('open %s', url);
-        browser.get(url, function(err){
+        debug('open %s', self._url);
+        browser.get(self._url, function(err){
           if (err) return done(err);
 
           wait();
