@@ -1,7 +1,7 @@
 
 # mocha-cloud
 
-  Mocha tests in the cloud with [SauceLabs](https://saucelabs.com).
+  Mocha testing in the cloud with [SauceLabs](https://saucelabs.com).
 
 ## Installation
 
