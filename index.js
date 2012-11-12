@@ -122,7 +122,13 @@ Cloud.prototype.start = function(fn){
           function wait() {
             browser.eval('window.mochaResults', function(err, res){
               if (err) return done(err);
-              if (!res) return debug('waiting for results'), wait();
+
+              if (!res) {
+                default('waiting for results');
+                setTimeout(wait, 1000);
+                return;
+              }
+
               debug('results %j', res);
               self.emit('end', conf, res);
               browser.quit();
