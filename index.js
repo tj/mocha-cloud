@@ -25,7 +25,7 @@ module.exports = Cloud;
  */
 
 function Cloud(name, user, key) {
-  this.name = namel
+  this.name = name;
   this.user = user;
   this.key = key;
   this.browsers = [];
