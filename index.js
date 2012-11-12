@@ -3,7 +3,8 @@
  * Module dependencies.
  */
 
-var Emitter = require('events').EventEmitter;
+var Emitter = require('events').EventEmitter
+  , debug = require('debug')('mocha-cloud');
 
 /**
  * Expose `Cloud`.
@@ -12,19 +13,36 @@ var Emitter = require('events').EventEmitter;
 module.exports = Cloud;
 
 /**
- * Initialize a cloud test with your saucelabs username / key.
+ * Initialize a cloud test with
+ * project `name`, your saucelabs username / key.
  *
+ * @param {String} name
  * @param {String} user
  * @param {String} key
  * @api public
  */
 
-function Cloud(user, key) {
+function Cloud(name, user, key) {
+  this.name = namel
   this.user = user;
   this.key = key;
   this.browsers = [];
+  this._tags = [];
   // this.browser = wd.remote('ondemand.saucelabs.com', 80, user, key);
 }
+
+/**
+ * Set tags to `tags`.
+ *
+ * @param {Array} tags
+ * @return {Cloud} self
+ * @api public
+ */
+
+Cloud.prototype.tags = function(tags){
+  this._tags = tags;
+  return this;
+};
 
 /**
  * Add browser for testing.
@@ -39,9 +57,11 @@ function Cloud(user, key) {
  */
 
 Cloud.prototype.browser = function(name, version, platform){
+  debug('add %s %s %s', name, version, platform);
   this.browsers.push({
     browserName: name,
     version: version,
     platform: platform
   });
 };
+
