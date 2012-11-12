@@ -5,6 +5,7 @@ var auth = fs.readFileSync('.auth', 'ascii').trim().split(':');
 
 var cloud = new Cloud('domify', auth[0], auth[1]);
 cloud.browser('iphone', '5.0', 'Mac 10.6');
+cloud.browser('ipad', '6', 'Mac 10.8');
 cloud.url('http://localhost:3000/test/');
 
 cloud.on('init', function(browser){
