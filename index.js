@@ -85,6 +85,13 @@ Cloud.prototype.browser = function(name, version, platform){
   });
 };
 
+/**
+ * Start cloud tests and invoke `fn(err, results)`.
+ *
+ * @param {Function} fn
+ * @api public
+ */
+
 Cloud.prototype.start = function(fn){
   var self = this;
   var batch = new Batch;
@@ -111,6 +118,7 @@ Cloud.prototype.start = function(fn){
               if (!res) return debug('waiting for results'), wait();
               debug('results %j', res);
               browser.quit();
+              done(null, res);
             });
           }
         });
