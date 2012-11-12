@@ -1,0 +1,9 @@
+{
+  "name": "mocha-cloud",
+  "version": "0.0.1",
+  "description": "Mocha tests in the cloud with Saucelabs",
+  "keywords": ["mocha", "test", "tdd", "bdd", "cloud", "selenium"],
+  "scripts": ["client.js"],
+  "main": "client.js",
+  "license": "MIT"
+}
