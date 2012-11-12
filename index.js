@@ -124,7 +124,7 @@ Cloud.prototype.start = function(fn){
               if (err) return done(err);
 
               if (!res) {
-                default('waiting for results');
+                debug('waiting for results');
                 setTimeout(wait, 1000);
                 return;
               }
