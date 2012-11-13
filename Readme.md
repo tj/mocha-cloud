@@ -3,6 +3,10 @@
 
   Mocha testing in the cloud with [SauceLabs](https://saucelabs.com).
 
+## Links
+
+  - Terminal [grid view](https://github.com/visionmedia/mocha-cloud-grid-view) for results
+
 ## Installation
 
   NPM server client:
