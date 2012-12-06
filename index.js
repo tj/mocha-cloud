@@ -130,6 +130,7 @@ Cloud.prototype.start = function(fn){
               if (err) return done(err);
 
               var ended = false;
+              runner.emit('raw jssn', res);
               var log = jssn.parse(res, mocha);
 
               for (var i = 0; i < log.length; i++) {
