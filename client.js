@@ -20,6 +20,22 @@ module.exports = function mochaCloud(mocha) {
     events = [];
     return e;
   };
+  
+  window.console = window.console || {};
+  var methods = ['dir', 'error', 'group', 'gropCollapsed', 'groupEnd', 'info', 'log', 'time', 'timeEnd', 'trace', 'warn'];
+  for (var i = 0; i < methods.length; i++) {
+    (function (method) {
+      var old = console[method] || function () {};
+      console[method] = function () {
+        if (typeof old === 'function') old.apply(this, arguments);
+        var args = ['console-' + method];
+        for (var i = 0; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+        events.push(args);
+      };
+    }(methods[i]));
+  }
 
   var HTML = Mocha.reporters.HTML;
   function SauceLabs(runner, root) {
