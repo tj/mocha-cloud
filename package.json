@@ -7,10 +7,11 @@
   "dependencies": {
     "wd": "0.0.26",
     "debug": "~0.7.0",
-    "batch": "~0.2.1"
+    "batch": "~0.2.1",
+    "mocha": "*",
+    "jssn": "*"
   },
   "devDependencies": {
-    "mocha": "*",
     "should": "*"
   },
   "main": "index"

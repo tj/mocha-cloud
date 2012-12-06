@@ -6,7 +6,9 @@
 var Emitter = require('events').EventEmitter
   , debug = require('debug')('mocha-cloud')
   , Batch = require('batch')
-  , wd = require('wd');
+  , wd = require('wd')
+  , mocha = require('mocha')
+  , jssn = require('jssn');
 
 /**
  * Expose `Cloud`.
@@ -108,31 +110,44 @@ Cloud.prototype.start = function(fn){
     conf.name = self.name;
 
     batch.push(function(done){
+      var runner = new Emitter();
       debug('running %s %s %s', conf.browserName, conf.version, conf.platform);
       var browser = wd.remote('ondemand.saucelabs.com', 80, self.user, self.key);
-      self.emit('init', conf);
+      self.emit('init', conf, runner);
+      runner.on('end', function () {
+        self.emit('end', conf, runner);
+      });
 
       browser.init(conf, function(){
         debug('open %s', self._url);
-        self.emit('start', conf);
+        self.emit('start', conf, runner);
 
         browser.get(self._url, function(err){
           if (err) return done(err);
 
           function wait() {
-            browser.eval('window.mochaResults', function(err, res){
+            browser.eval('window.stream()', function(err, res){
               if (err) return done(err);
 
-              if (!res) {
-                debug('waiting for results');
-                setTimeout(wait, 1000);
-                return;
+              var ended = false;
+              runner.emit('raw jssn', res);
+              var log = jssn.parse(res, mocha);
+
+              for (var i = 0; i < log.length; i++) {
+                debug('Event %s: %j', log[i][0], log[i]);
+                if (log[i][0] === 'end') ended = true;
+                runner.emit.apply(runner, log[i]);
               }
 
-              debug('results %j', res);
-              self.emit('end', conf, res);
-              browser.quit();
-              done(null, res);
+              if (!ended) {
+                debug('still running');
+                setTimeout(wait, 1000);
+              } else {
+                debug('tests completed');
+                self.emit('end', conf, res);
+                browser.quit();
+                done(null, res);
+              }
             });
           }
 
