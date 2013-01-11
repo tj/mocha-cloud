@@ -1,11 +1,9 @@
-
 # mocha-cloud
 
-  Mocha testing in the cloud with [SauceLabs](https://saucelabs.com).
+  Mocha testing in the cloud with [SauceLabs](https://saucelabs.com). If you plan
+  on running the tests from the terminal check out the terminal [grid view](https://github.com/visionmedia/mocha-cloud-grid-view).
 
-## Links
-
-  - Terminal [grid view](https://github.com/visionmedia/mocha-cloud-grid-view) for results
+  ![](https://a248.e.akamai.net/camo.github.com/5de44b460b7f81c02497bec587a1b53832150c28/687474703a2f2f662e636c2e6c792f6974656d732f31653043304c3374317831753377334a323033752f6d6f6368612d677269642d7061737365732e706e67)
 
 ## Installation
 
