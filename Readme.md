@@ -17,7 +17,7 @@ $ npm install mocha-cloud
   you may simply execute the following to get the client script:
 
 ```
-$ component install visionmedia/mocha-cloud
+$ component install --dev visionmedia/mocha-cloud
 ```
 
   Otherwise use the ./build/build.js file,
