@@ -243,7 +243,9 @@ require.alias("mocha-cloud/client.js", "mocha-cloud/index.js");
 if (typeof exports == "object") {
   module.exports = require("mocha-cloud");
 } else if (typeof define == "function" && define.amd) {
-  define(require("mocha-cloud"));
+  define(function() {
+    return require("mocha-cloud");
+  });
 } else {
   window["cloud"] = require("mocha-cloud");
 }})();
