@@ -31,6 +31,7 @@ function Cloud(name, user, key) {
   this.browsers = [];
   this._url = 'http://localhost:3000/';
   this._tags = [];
+  this._build = undefined;
 }
 
 /**
@@ -61,6 +62,19 @@ Cloud.prototype.tags = function(tags){
 
 Cloud.prototype.url = function(url){
   this._url = url;
+  return this;
+};
+
+/**
+ * Set build id for test
+ * https://saucelabs.com/docs/additional-config#build
+ *
+ * @param {String} build_id
+ * @api public
+ */
+
+Cloud.prototype.build = function(build_id) {
+  this._build = build_id;
   return this;
 };
 
@@ -104,8 +118,9 @@ Cloud.prototype.start = function(fn){
   fn = fn || function(){};
 
   this.browsers.forEach(function(conf){
-    conf.tags = self.tags;
+    conf.tags = self._tags;
     conf.name = self.name;
+    conf.build = self._build;
 
     batch.push(function(done){
       debug('running %s %s %s', conf.browserName, conf.version, conf.platform);
