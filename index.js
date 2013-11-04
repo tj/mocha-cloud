@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-var Emitter = require('events').EventEmitter
-  , debug = require('debug')('mocha-cloud')
-  , Batch = require('batch')
-  , wd = require('wd');
+var Emitter = require('events').EventEmitter;
+var debug = require('debug')('mocha-cloud');
+var Batch = require('batch');
+var wd = require('wd');
 
 /**
  * Expose `Cloud`.
@@ -131,8 +131,10 @@ Cloud.prototype.start = function(fn){
 
               debug('results %j', res);
               self.emit('end', conf, res);
-              browser.quit();
-              done(null, res);
+              browser.sauceJobStatus(res.failures === 0, function(err) {
+                browser.quit();
+                done(err, res);
+              });
             });
           }
 
