@@ -32,6 +32,7 @@ function Cloud(name, user, key) {
   this._url = 'http://localhost:3000/';
   this._tags = [];
   this._build = undefined;
+  this._concurrency = 0; // unlimited
 }
 
 /**
@@ -79,6 +80,18 @@ Cloud.prototype.build = function(build_id) {
 };
 
 /**
+ * Set concurrency for batch runs. Concurrency limits
+ * https://saucelabs.com/docs/additional-config#build
+ *
+ * @param {Number} num number of simultaneous requests to allow
+ * @api public
+ */
+
+Cloud.prototype.concurrency = function(num) {
+  this._concurrency = num;
+};
+
+/**
  * Add browser for testing.
  *
  * View https://saucelabs.com/docs/browsers for details.
@@ -116,6 +129,10 @@ Cloud.prototype.start = function(fn){
   var self = this;
   var batch = new Batch;
   fn = fn || function(){};
+
+  if (self._concurrency) {
+    batch.concurrency(self._concurrency);
+  }
 
   this.browsers.forEach(function(conf){
     conf.tags = self._tags;
