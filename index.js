@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-var Emitter = require('events').EventEmitter
-  , debug = require('debug')('mocha-cloud')
-  , Batch = require('batch')
-  , wd = require('wd');
+var Emitter = require('events').EventEmitter;
+var debug = require('debug')('mocha-cloud');
+var Batch = require('batch');
+var wd = require('wd');
 
 /**
  * Expose `Cloud`.
@@ -31,6 +31,8 @@ function Cloud(name, user, key) {
   this.browsers = [];
   this._url = 'http://localhost:3000/';
   this._tags = [];
+  this._build = undefined;
+  this._concurrency = 0; // unlimited
 }
 
 /**
@@ -62,6 +64,31 @@ Cloud.prototype.tags = function(tags){
 Cloud.prototype.url = function(url){
   this._url = url;
   return this;
+};
+
+/**
+ * Set build id for test
+ * https://saucelabs.com/docs/additional-config#build
+ *
+ * @param {String} build_id
+ * @api public
+ */
+
+Cloud.prototype.build = function(build_id) {
+  this._build = build_id;
+  return this;
+};
+
+/**
+ * Set concurrency for batch runs. Concurrency limits
+ * https://saucelabs.com/docs/additional-config#build
+ *
+ * @param {Number} num number of simultaneous requests to allow
+ * @api public
+ */
+
+Cloud.prototype.concurrency = function(num) {
+  this._concurrency = num;
 };
 
 /**
@@ -103,9 +130,14 @@ Cloud.prototype.start = function(fn){
   var batch = new Batch;
   fn = fn || function(){};
 
+  if (self._concurrency) {
+    batch.concurrency(self._concurrency);
+  }
+
   this.browsers.forEach(function(conf){
-    conf.tags = self.tags;
+    conf.tags = self._tags;
     conf.name = self.name;
+    conf.build = self._build;
 
     batch.push(function(done){
       debug('running %s %s %s', conf.browserName, conf.version, conf.platform);
@@ -131,8 +163,10 @@ Cloud.prototype.start = function(fn){
 
               debug('results %j', res);
               self.emit('end', conf, res);
-              browser.quit();
-              done(null, res);
+              browser.sauceJobStatus(res.failures === 0, function(err) {
+                browser.quit();
+                done(err, res);
+              });
             });
           }
 
