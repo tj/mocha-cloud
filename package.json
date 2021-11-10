@@ -9,6 +9,10 @@
     "debug": "~0.7.0",
     "batch": "~0.2.1"
   },
+  "repository": {	
+    "type": "git",
+    "url": "https://github.com/tj/mocha-cloud.git"
+  },
   "devDependencies": {
     "mocha": "*",
     "should": "*"
